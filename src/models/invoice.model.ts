@@ -1,9 +1,20 @@
-import {Entity, model, property, hasMany, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
+import {Customer} from './customer.model';
 import {Product} from './product.model';
 import {ProductsInvoice} from './products-invoice.model';
-import {Customer} from './customer.model';
 
-@model()
+@model({
+  settings: {
+    foreignKeys: {
+      fk_invoice_customerId: {
+        name: 'fk_invoice_customerId',
+        entity: 'Customer',
+        entityKey: 'id',
+        foreignKey: 'customerId',
+      }
+    },
+  },
+})
 export class Invoice extends Entity {
   @property({
     type: 'number',
