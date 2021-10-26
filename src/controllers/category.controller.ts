@@ -1,30 +1,27 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Category} from '../models';
 import {CategoryRepository} from '../repositories';
 
+
+@authenticate("admin")
 export class CategoryController {
   constructor(
     @repository(CategoryRepository)
-    public categoryRepository : CategoryRepository,
-  ) {}
+    public categoryRepository: CategoryRepository,
+  ) { }
 
   @post('/categories')
   @response(200, {
@@ -58,6 +55,7 @@ export class CategoryController {
     return this.categoryRepository.count(where);
   }
 
+  @authenticate.skip()
   @get('/categories')
   @response(200, {
     description: 'Array of Category model instances',
