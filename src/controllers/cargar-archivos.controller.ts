@@ -1,9 +1,9 @@
 
 
 import {inject} from '@loopback/core';
+import {repository} from '@loopback/repository';
 import {
-  HttpErrors,
-  post,
+  HttpErrors, param, post,
   Request,
   requestBody,
   Response,
@@ -12,9 +12,13 @@ import {
 import multer from 'multer';
 import path from 'path';
 import {Keys as llaves} from '../config/keys';
+import {Image} from '../models';
+import {ImageRepository} from '../repositories';
 
 export class CargarArchivosController {
   constructor(
+    @repository(ImageRepository)
+    private imageRepository: ImageRepository
   ) { }
 
 
@@ -24,7 +28,7 @@ export class CargarArchivosController {
    * @param response
    * @param request
    */
-  @post('/CargarImagenProducto', {
+  @post('/CargarImagenProducto/{id_producto}', {
     responses: {
       200: {
         content: {
@@ -41,12 +45,17 @@ export class CargarArchivosController {
   async cargarImagenDelProducto(
     @inject(RestBindings.Http.RESPONSE) response: Response,
     @requestBody.file() request: Request,
+    @param.path.number("id_producto") id_producto: number
   ): Promise<object | false> {
     const rutaImagenProducto = path.join(__dirname, llaves.carpetaImagenProducto);
     let res = await this.StoreFileToPath(rutaImagenProducto, llaves.nombreCampoImagenProducto, request, response, llaves.extensionesPermitidasIMG);
     if (res) {
       const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
+        let img = new Image();
+        img.name = nombre_archivo;
+        img.productId = id_producto;
+        await this.imageRepository.save(img);
         return {filename: nombre_archivo};
       }
     }
