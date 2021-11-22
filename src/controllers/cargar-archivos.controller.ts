@@ -62,6 +62,41 @@ export class CargarArchivosController {
     return res;
   }
 
+
+  /**
+   *
+   * @param response
+   * @param request
+   */
+  @post('/CargarImagenPrincipalProducto', {
+    responses: {
+      200: {
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+            },
+          },
+        },
+        description: 'Función de carga de la imagen de un producto.',
+      },
+    },
+  })
+  async cargarImagenPrincipalDelProducto(
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+    @requestBody.file() request: Request
+  ): Promise<object | false> {
+    const rutaImagenProducto = path.join(__dirname, llaves.carpetaImagenProducto);
+    let res = await this.StoreFileToPath(rutaImagenProducto, llaves.nombreCampoImagenProducto, request, response, llaves.extensionesPermitidasIMG);
+    if (res) {
+      const nombre_archivo = response.req?.file?.filename;
+      if (nombre_archivo) {
+        return {filename: nombre_archivo};
+      }
+    }
+    return res;
+  }
+
   /**
    *
    * @param response
