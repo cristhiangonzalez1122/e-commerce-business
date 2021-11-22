@@ -31,6 +31,12 @@ export class Product extends Entity {
   name: string;
 
   @property({
+    type: 'string',
+    required: true,
+  })
+  main_image: string;
+
+  @property({
     type: 'number',
     required: true,
   })

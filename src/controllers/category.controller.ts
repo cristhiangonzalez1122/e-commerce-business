@@ -93,6 +93,7 @@ export class CategoryController {
     return this.categoryRepository.updateAll(category, where);
   }
 
+  @authenticate.skip()
   @get('/categories/{id}')
   @response(200, {
     description: 'Category model instance',
