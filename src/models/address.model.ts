@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {Entity, model, property} from '@loopback/repository';
 
 @model({
@@ -8,7 +9,7 @@ import {Entity, model, property} from '@loopback/repository';
         entity: 'Customer',
         entityKey: 'id',
         foreignKey: 'customerId',
-      }
+      },
     },
   },
 })

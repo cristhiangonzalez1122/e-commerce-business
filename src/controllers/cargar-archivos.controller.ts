@@ -1,13 +1,16 @@
-
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/naming-convention */
 import {inject} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {
-  HttpErrors, param, post,
+  HttpErrors,
+  param,
+  post,
   Request,
   requestBody,
   Response,
-  RestBindings
+  RestBindings,
 } from '@loopback/rest';
 import multer from 'multer';
 import path from 'path';
@@ -18,10 +21,8 @@ import {ImageRepository} from '../repositories';
 export class CargarArchivosController {
   constructor(
     @repository(ImageRepository)
-    private imageRepository: ImageRepository
-  ) { }
-
-
+    private imageRepository: ImageRepository,
+  ) {}
 
   /**
    *
@@ -45,14 +46,23 @@ export class CargarArchivosController {
   async cargarImagenDelProducto(
     @inject(RestBindings.Http.RESPONSE) response: Response,
     @requestBody.file() request: Request,
-    @param.path.number("id_producto") id_producto: number
+    @param.path.number('id_producto') id_producto: number,
   ): Promise<object | false> {
-    const rutaImagenProducto = path.join(__dirname, llaves.carpetaImagenProducto);
-    let res = await this.StoreFileToPath(rutaImagenProducto, llaves.nombreCampoImagenProducto, request, response, llaves.extensionesPermitidasIMG);
+    const rutaImagenProducto = path.join(
+      __dirname,
+      llaves.carpetaImagenProducto,
+    );
+    const res = await this.StoreFileToPath(
+      rutaImagenProducto,
+      llaves.nombreCampoImagenProducto,
+      request,
+      response,
+      llaves.extensionesPermitidasIMG,
+    );
     if (res) {
       const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
-        let img = new Image();
+        const img = new Image();
         img.name = nombre_archivo;
         img.productId = id_producto;
         await this.imageRepository.save(img);
@@ -61,7 +71,6 @@ export class CargarArchivosController {
     }
     return res;
   }
-
 
   /**
    *
@@ -84,10 +93,19 @@ export class CargarArchivosController {
   })
   async cargarImagenPrincipalDelProducto(
     @inject(RestBindings.Http.RESPONSE) response: Response,
-    @requestBody.file() request: Request
+    @requestBody.file() request: Request,
   ): Promise<object | false> {
-    const rutaImagenProducto = path.join(__dirname, llaves.carpetaImagenProducto);
-    let res = await this.StoreFileToPath(rutaImagenProducto, llaves.nombreCampoImagenProducto, request, response, llaves.extensionesPermitidasIMG);
+    const rutaImagenProducto = path.join(
+      __dirname,
+      llaves.carpetaImagenProducto,
+    );
+    const res = await this.StoreFileToPath(
+      rutaImagenProducto,
+      llaves.nombreCampoImagenProducto,
+      request,
+      response,
+      llaves.extensionesPermitidasIMG,
+    );
     if (res) {
       const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
@@ -120,8 +138,17 @@ export class CargarArchivosController {
     @inject(RestBindings.Http.RESPONSE) response: Response,
     @requestBody.file() request: Request,
   ): Promise<object | false> {
-    const rutaDocumentoPersona = path.join(__dirname, llaves.carpetaDocumentoPersona);
-    let res = await this.StoreFileToPath(rutaDocumentoPersona, llaves.nombreCampoDocumentoPersona, request, response, llaves.extensionesPermitidasDOC);
+    const rutaDocumentoPersona = path.join(
+      __dirname,
+      llaves.carpetaDocumentoPersona,
+    );
+    const res = await this.StoreFileToPath(
+      rutaDocumentoPersona,
+      llaves.nombreCampoDocumentoPersona,
+      request,
+      response,
+      llaves.extensionesPermitidasDOC,
+    );
     if (res) {
       const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
@@ -131,21 +158,20 @@ export class CargarArchivosController {
     return res;
   }
 
-
   /**
    * Return a config for multer storage
    * @param path
    */
   private GetMulterStorageConfig(path: string) {
-    var filename: string = '';
+    let filename = '';
     const storage = multer.diskStorage({
       destination: function (req: any, file: any, cb: any) {
-        cb(null, path)
+        cb(null, path);
       },
       filename: function (req: any, file: any, cb: any) {
-        filename = `${Date.now()}-${file.originalname}`
+        filename = `${Date.now()}-${file.originalname}`;
         cb(null, filename);
-      }
+      },
     });
     return storage;
   }
@@ -156,23 +182,30 @@ export class CargarArchivosController {
    * @param request
    * @param response
    */
-  private StoreFileToPath(storePath: string, fieldname: string, request: Request, response: Response, acceptedExt: string[]): Promise<object> {
+  private StoreFileToPath(
+    storePath: string,
+    fieldname: string,
+    request: Request,
+    response: Response,
+    acceptedExt: string[],
+  ): Promise<object> {
     return new Promise<object>((resolve, reject) => {
       const storage = this.GetMulterStorageConfig(storePath);
       const upload = multer({
         storage: storage,
         fileFilter: function (req: any, file: any, callback: any) {
-          var ext = path.extname(file.originalname).toUpperCase();
+          const ext = path.extname(file.originalname).toUpperCase();
           if (acceptedExt.includes(ext)) {
             return callback(null, true);
           }
-          return callback(new HttpErrors[400]('El formato del archivo no es permitido.'));
+          return callback(
+            new HttpErrors[400]('El formato del archivo no es permitido.'),
+          );
         },
         limits: {
-          fileSize: llaves.tamMaxImagenProducto
-        }
-      },
-      ).single(fieldname);
+          fileSize: llaves.tamMaxImagenProducto,
+        },
+      }).single(fieldname);
       upload(request, response, (err: any) => {
         if (err) {
           reject(err);
@@ -181,5 +214,4 @@ export class CargarArchivosController {
       });
     });
   }
-
 }
