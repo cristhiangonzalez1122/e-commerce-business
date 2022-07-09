@@ -18,8 +18,8 @@ export namespace Keys {
     '.XLS',
     '.XLSX',
   ];
-  export const url_validar_token = 'http://localhost:5001/validar-token';
-  export const rol_administrador = '615b81505f537b1a206c673f';
+  export const url_validar_token = 'http://localhost:5001/token-validate';
+  export const rol_administrador = '6271f44587c1302f0413b05d';
   export const arg_token = 'token';
-  export const arg_rol_validar = 'rol';
+  export const arg_rol_validar = 'role';
 }

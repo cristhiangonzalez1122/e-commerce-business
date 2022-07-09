@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Count,
   CountSchema,
@@ -5,7 +6,7 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-  import {
+import {
   del,
   get,
   getModelSchemaRef,
@@ -15,22 +16,20 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-Product,
-ProductCategory,
-Category,
-} from '../models';
+import {Category, Product} from '../models';
 import {ProductRepository} from '../repositories';
 
 export class ProductCategoryController {
   constructor(
-    @repository(ProductRepository) protected productRepository: ProductRepository,
-  ) { }
+    @repository(ProductRepository)
+    protected productRepository: ProductRepository,
+  ) {}
 
   @get('/products/{id}/categories', {
     responses: {
       '200': {
-        description: 'Array of Product has many Category through ProductCategory',
+        description:
+          'Array of Product has many Category through ProductCategory',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Category)},
@@ -65,7 +64,8 @@ export class ProductCategoryController {
           }),
         },
       },
-    }) category: Omit<Category, 'id'>,
+    })
+    category: Omit<Category, 'id'>,
   ): Promise<Category> {
     return this.productRepository.categories(id).create(category);
   }
@@ -88,7 +88,8 @@ export class ProductCategoryController {
       },
     })
     category: Partial<Category>,
-    @param.query.object('where', getWhereSchemaFor(Category)) where?: Where<Category>,
+    @param.query.object('where', getWhereSchemaFor(Category))
+    where?: Where<Category>,
   ): Promise<Count> {
     return this.productRepository.categories(id).patch(category, where);
   }
@@ -103,7 +104,8 @@ export class ProductCategoryController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Category)) where?: Where<Category>,
+    @param.query.object('where', getWhereSchemaFor(Category))
+    where?: Where<Category>,
   ): Promise<Count> {
     return this.productRepository.categories(id).delete(where);
   }
