@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
 import {Brand} from './brand.model';
 import {Category} from './category.model';
